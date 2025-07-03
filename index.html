@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シンプルなURL管理アプリ</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- PWA用のメタタグ -->
+    <meta name="theme-color" content="#007bff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="URL管理">
+    <meta name="description" content="シンプルなURL管理アプリケーション">
+    
+    <!-- PWA用のリンク -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+    <div class="container">
+        <h1>URL管理アプリ</h1>
+
+        <div class="add-url-section">
+            <input type="text" id="urlInput" placeholder="URLを入力してください">
+            <button id="addUrlButton">URLを追加</button>
+        </div>
+
+        <div class="url-list-section">
+            <h2>登録済みURL</h2>
+            <ul id="urlList">
+                </ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    
+    <!-- Service Worker登録スクリプト -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
