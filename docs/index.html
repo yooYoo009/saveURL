@@ -38,6 +38,35 @@
     
     <!-- Service Worker登録スクリプト -->
     <script>
+        let deferredPrompt; // インストールプロンプトを保存する変数
+        const installButton = document.getElementById('installButton'); // インストールボタンの要素を取得
+
+        // PWAインストール可能イベントをキャッチ
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('PWA install prompt event fired'); // コンソールにイベント発生を記録
+            e.preventDefault(); // デフォルトのプロンプト表示を防ぐ
+            deferredPrompt = e; // イベントを保存
+            installButton.style.display = 'block'; // 手動インストールボタンを表示
+        });
+
+        // インストールボタンクリック時の処理
+        installButton.addEventListener('click', async () => {
+            if (deferredPrompt) { // 保存されたプロンプトがある場合
+                deferredPrompt.prompt(); // インストールプロンプトを表示
+                const { outcome } = await deferredPrompt.userChoice; // ユーザーの選択を待つ
+                console.log(`User response to the install prompt: ${outcome}`); // ユーザーの選択をログに記録
+                deferredPrompt = null; // プロンプトをクリア
+                installButton.style.display = 'none'; // ボタンを非表示
+            }
+        });
+
+        // アプリがインストール済みの場合、ボタンを非表示
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('PWA was installed'); // インストール完了をログに記録
+            installButton.style.display = 'none'; // ボタンを非表示
+        });
+
+        // Service Worker登録
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
